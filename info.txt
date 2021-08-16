@@ -1,0 +1,108 @@
+
+
+Nestjs(graphql), TypeOrm, Typescript
+
+
+- Active Record vs Data Mapper(typeOrm)
+
+1. app.module-> typeOrmModule에서 entity를 가짐 -> db로 등록됨
+2. entity.module에서 typeOrmModule.forFeature(entity)를 해줌
+3. entity.resolver에서 service를 constructor 시킴
+4. Service를 entity.module에서 providers에 추가시킴
+5. Service에서 constructor를 만들고 typeOrm의 repository를 @Inject(entity) 해야함, 
+
+
+- mapped types (graphql) : dto 와 entity가 일치하지 않는 문제 해결
+1. 기본 base(InputType) 클래스를 만들고, mapped type을 통해서 필요한 멤버변수들만 사용
+2. PartialType : baseType class를 가져다가 새로운 class를 만들어준다.
+3. PickType: 원하는 멤버변수(property)를 선택해 새로운 class를 만들어준다.
+4. OmitType: 원하는 멤버변수를 제외하고 class를 만들어준다.
+5. Intersection: 2개의 InputType을 합쳐서 새로운 class를 만들어 준다.
+
+method는 class안에 있는 function.
+
+- recap (초기 설정)
+1. nest g mo 모듈명
+2. 폴더(entities) 및 entity 생성
+3. resolver 생성
+4. service 생성
+5. module에 imports사용 entity 등록
+6. service에 constructor 생성 @InjectRepository 등록
+7. resolver에서 constructor생성 service를 등록
+8. module에서 providers사용 service, resolver 등록
+
+
+- password hash
+1. listener(typeOrm)
+2. listener는 기본적으로 entity에 일이 생길때 실행됨, entity 변경 전, 변경 후
+3. @afterLoad :  fuction 실행 후 실행되는 function
+4. @BeforeInsert : entity가 insert가 되기전에 실행되는 function 
+
+
+- configService(app.module.ts에서 ConfigModule) 사용하는 법
+1. module에 configService 등록
+2. constructor에 config Inject 시키기
+
+- dependency injection 
+- module의 종류는 2가지 존재 
+ 1. static module (현재 UsersModule)
+ 2. forRoot() .. 등 DynamicModule : 설정이 적용되어 있는 module
+DynamicModule은 결과적으로 staticModule이 된다.
+module에 옵션 설정을 붙여서 동적인 모듈로 만들어주고, 리턴값으로 우리가 설정한 옵션들이 존재하는 상태의 정적인 모듈로 리턴
+
+ex)ConfigModule.forRoot()와 같은 형태로 JwtModule에 만들어줌. (options을 service에 보냄)
+
+- middleware 사용법
+1. main.ts 에서 사용 가능 : function만 사용 가능 , app.use(middleware);
+2. Appmodule에서 consumer에서 사용 가능 forRoutes() - 특정 경로에서만 사용하거나, 특정경로 빼고만 사용 가능
+: configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({
+      path: '/graphql',
+      method: RequestMethod.POST,
+    });
+  }
+* 모든곳에서 middleware를 사용하려면 app.use() 사용, 경로를 지정하려면 class middleware로 app.module에 적용
+
+- @Injectable() 
+class가 @Injectable()로 설정되어 있어야 inject 가능, constructor에 넣기
+
+- recep
+1. module
+2. dynamic module
+3. providers
+4. dependency Injection (DI)
+5. middlewares
+6. guard
+7. decorators
+8. context
+
+* authentication 정리
+1. header에 token을 보내고 있음
+2. middleware는 header안에 token을 추출 (jwtService에서 토큰 verify)
+3. id를 찾으면 id를 통하여 user를 찾음
+4. user를 request object에 붙여서 next()
+5. request object를 모든 resolver에서 쓸수 있음,
+6. JwtMiddleware를 거치고, graphql context에 request user를 보냄
+7. GraphQLModule에서 모든 request에서 context를 호출
+8. context에 user를 넣었음
+9. user resolver를 보면 guard가 존재
+10. gqlContext에서 user를 찾음
+11. middleware에서 시작해서 apollo server의 context를 거치고, authorization guard를 거쳐서 resolver에 도착하면 
+12. decorator가 있음, decorator는 context를 가져다가 graphql context는 context를 graphql context로 바꿈
+13. graphql context에서 user를 가져오면 user를 return함
+* decorator는 value를 return 해야함 value의 type은 User
+
+- header에 token을 보내고, decrypt, verify하는 middleware를 거쳐서 request object에 user를 추가해서 request object가
+- graphql context 안으로 들어가게 되고 guard가 graphql context를 찾고 user가 있는지 없는지에 따라 true, flase를 return 함
+- guard에 의해 request가 authorize가 되면 resolver에 decorator가 필요 decorator는 graphql context에서 찾은 user와 같은
+- 같은 graphql context의 user를 찾음
+
+
+#5.2 ~ 5.5 : dynamic module 만드는법, forRoot 사용법 0722
+#5.6 ~ 5.7 : middleware 사용법 decoded jwt 0722
+#5.8 : request에서 미들웨어에서 user를 찾고 request로 user를 넣어서 next(),
+#5.9 : jwt 폴더 - authentication을 직접 구현 (guard 는 request를 다음 단계로 계속 진행할지 말지를 정함)
+#6.0 : typeOrm one to one, one to many 의 관계
+#6.3 : select, relation 관계
+#6.4 : resolver(controller)는 service를 호출하는 형태만 지님, 모든 처리는 service에서 전달 try catch 포함
+#6.
