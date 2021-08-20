@@ -13,7 +13,6 @@ import { UserProfileInput, UserProfileOutput } from './dtos/user-profile';
 import { VerifyEmailInput } from './dtos/verify-email.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { boolean } from 'joi';
 
 @Resolver(() => User)
 export class UsersResolver {
