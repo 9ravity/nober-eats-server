@@ -13,6 +13,7 @@ import { UserProfileInput, UserProfileOutput } from './dtos/user-profile';
 import { VerifyEmailInput } from './dtos/verify-email.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
+import { Role } from 'dist/auth/role.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -34,13 +35,13 @@ export class UsersResolver {
 
   /* token 확인 middleware 사용 */
   @Query((returns) => User)
-  @UseGuards(AuthGuard)
+  @Role(['Any'])
   me(@AuthUser() authUser: User) {
     return authUser;
   }
 
-  @UseGuards(AuthGuard)
   @Query((returns) => UserProfileOutput)
+  @Role(['Any'])
   async userProfile(
     @Args() userProfileInput: UserProfileInput,
   ): Promise<UserProfileOutput> {

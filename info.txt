@@ -99,6 +99,24 @@ class가 @Injectable()로 설정되어 있어야 inject 가능, constructor에 �
 
 
 - db Relationship : db 관계 설정 typeOrm
+- role based authentication과 authorization : metadata와 global guard를 활용
+1. guard들을 app_guard nestjs가 전체적으로 적용 시켜줌,
+2. 우리 guard는 reflector를 사용 -> metadata를 get함
+3. role.decorator는 metadata를 설정함
+4. metadata는 resolver의 extra data 
+-> 몇개의 resolver는 metadata를 가지지 않고, 몇개는 metadata를 가짐, role key
+-> metadata안에 roles의 배열로 넣어줌
+5. role decorator를 모든 resolver에 import 해줌
+6. resolver에 metadata, role 없으면 public 
+-> enum 의 UserRole은 데이터베이스,graphql, decorator를 위해 사용
+7. auth.guard 해석
+-> 일단 roles key를 가져옴 (즉, metadata의 roles 배열을 가져옴)
+-> resolver에 metadata가 없을 경우 public
+-> canActivate는 true는 계속 진행, false 진행 불가
+-> metadata를 가질경우 user를 graphqlContext에서 가져옴
+-> resolver에 metadata가 있다면 로그인 한 유저
+-> 만약 graphqlContext에 user가 없다면 로그인을 하지 않았거나, token이 없다는 뜻임
+-> metadata고 있고, login user도 있고, any도 있으면 public 모든 사람이 접근 가능 (role과 상관없이)
 
 #5.2 ~ 5.5 : dynamic module 만드는법, forRoot 사용법 0722
 #5.6 ~ 5.7 : middleware 사용법 decoded jwt 0722

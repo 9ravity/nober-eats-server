@@ -76,6 +76,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
         },
       },
     }),
+    AuthModule,
     UsersModule,
     AuthModule,
     RestaurantsModule,
