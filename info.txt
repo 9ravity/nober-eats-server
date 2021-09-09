@@ -118,13 +118,24 @@ class가 @Injectable()로 설정되어 있어야 inject 가능, constructor에 �
 -> 만약 graphqlContext에 user가 없다면 로그인을 하지 않았거나, token이 없다는 뜻임
 -> metadata고 있고, login user도 있고, any도 있으면 public 모든 사람이 접근 가능 (role과 상관없이)
 
+resolver, service, dto
+
+dto에서는 InputType, ObjectType, ArgsType
+
 #5.2 ~ 5.5 : dynamic module 만드는법, forRoot 사용법 0722
-#5.6 ~ 5.7 : middleware 사용법 decoded jwt 0722
+##5.6 ~ 5.7 : middleware 사용법 decoded jwt 0722
 #5.8 : request에서 미들웨어에서 user를 찾고 request로 user를 넣어서 next(),
 #5.9 : jwt 폴더 - authentication을 직접 구현 (guard 는 request를 다음 단계로 계속 진행할지 말지를 정함)
 #6.0 : typeOrm one to one, one to many 의 관계
-#6.3 : select, relation 관계
+##6.3 : select, relation 관계
 #6.4 : resolver(controller)는 service를 호출하는 형태만 지님, 모든 처리는 service에서 전달 try catch 포함
-#10.1: Relationship 사용 OntoMany 1대 N 관계
+##10.1: Relationship 사용 OntoMany 1대 N 관계
 #10.3 : slug 사용법 -> categoryName + categorySlug 사용
 #10.4 : metadata 를 사용하여 role 정의 -> user의 role에 따라 보여지는 페이지를 제한 custom decorator, keyof typeof
+##10.6 : role-based authorization
+#10.8 : loadRelationIds, @RelatationId 
+#10.9 : nodejs method 작성
+#10.10: typeOrm custom repository : repository를 만들면, service에서 Inject module에서 typeOrm forFeature 에서 repository를 import
+#10.12: computed field, dynamic field - dynamic field 는 db에 실제로 저장되지 않는 field, db와 entity에 존재하지 않는 field request를 보낼때마다 계산하여 response를 해줌 db 컬럼x ResolverField
+#10.15: pagination, nestjs 패키지도 있지만 대부분 직접 구현
+#10.17: typeOrm:where, like, 직접 sql 사용 Raw() (sql 문법, sql tutorial 참고)

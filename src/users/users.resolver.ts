@@ -13,7 +13,7 @@ import { UserProfileInput, UserProfileOutput } from './dtos/user-profile';
 import { VerifyEmailInput } from './dtos/verify-email.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { Role } from 'dist/auth/role.decorator';
+import { Role } from 'src/auth/role.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {

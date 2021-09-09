@@ -15,6 +15,6 @@
   "exclude": [
     "typings",
     "node_modules",
-    "wwwroot"
+    "wwwroot",
   ]
 }
